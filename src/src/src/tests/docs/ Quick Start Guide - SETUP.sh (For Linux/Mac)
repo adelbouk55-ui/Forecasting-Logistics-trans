@@ -1,0 +1,42 @@
+#!/bin/bash
+
+echo "╔════════════════════════════════════════════════════════════╗"
+echo "║   Forecasting-Logistics Project Setup                      ║"
+echo "╚════════════════════════════════════════════════════════════╝"
+
+echo ""
+echo "Step 1: Creating virtual environment..."
+python3 -m venv venv
+
+echo "Step 2: Activating virtual environment..."
+source venv/bin/activate
+
+echo "Step 3: Installing dependencies..."
+pip install -r requirements.txt
+
+echo "Step 4: Creating .env file from template..."
+if [ ! -f .env ]; then
+    cp .env.example .env
+    echo "✅ .env file created. Please edit with your settings."
+else
+    echo "⚠️  .env file already exists."
+fi
+
+echo "Step 5: Creating necessary folders..."
+mkdir -p data/raw
+mkdir -p data/processed
+mkdir -p models/saved_models
+mkdir -p logs
+mkdir -p notebooks
+
+echo ""
+echo "╔════════════════════════════════════════════════════════════╗"
+echo "║   Setup Complete! ✅                                       ║"
+echo "╚════════════════════════════════════════════════════════════╝"
+
+echo ""
+echo "Next steps:"
+echo "1. Activate virtual environment: source venv/bin/activate"
+echo "2. Run the API: python main.py"
+echo "3. Test endpoints: python test_api.py"
+echo "4. Run unit tests: pytest tests/ -v"
