@@ -1,0 +1,233 @@
+
+---
+
+## **2. test_api.py** (Testing Script)
+
+```python
+"""
+Test API endpoints
+Complete testing script for all endpoints
+"""
+
+import requests
+import json
+import os
+
+BASE_URL = "http://localhost:5000"
+
+def test_health():
+    """Test health check endpoint"""
+    print("\n" + "="*60)
+    print("TEST 1: Health Check")
+    print("="*60)
+    try:
+        response = requests.get(f"{BASE_URL}/health")
+        print(f"✅ Status Code: {response.status_code}")
+        print(f"Response:\n{json.dumps(response.json(), indent=2)}")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        return False
+
+def test_status():
+    """Test API status endpoint"""
+    print("\n" + "="*60)
+    print("TEST 2: API Status")
+    print("="*60)
+    try:
+        response = requests.get(f"{BASE_URL}/api/v1/status")
+        print(f"✅ Status Code: {response.status_code}")
+        print(f"Response:\n{json.dumps(response.json(), indent=2)}")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        return False
+
+def test_home():
+    """Test home endpoint"""
+    print("\n" + "="*60)
+    print("TEST 3: Home / API Info")
+    print("="*60)
+    try:
+        response = requests.get(f"{BASE_URL}/")
+        print(f"✅ Status Code: {response.status_code}")
+        print(f"Response:\n{json.dumps(response.json(), indent=2)}")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        return False
+
+def test_predict():
+    """Test prediction endpoint"""
+    print("\n" + "="*60)
+    print("TEST 4: Prediction")
+    print("="*60)
+    try:
+        payload = {
+            "model": "prophet",
+            "data": [100, 120, 110, 130, 150, 140, 160],
+            "periods": 7
+        }
+        print(f"Request Payload:\n{json.dumps(payload, indent=2)}")
+        
+        response = requests.post(
+            f"{BASE_URL}/api/v1/predict",
+            json=payload,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"✅ Status Code: {response.status_code}")
+        print(f"Response:\n{json.dumps(response.json(), indent=2)}")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        return False
+
+def test_train():
+    """Test training endpoint"""
+    print("\n" + "="*60)
+    print("TEST 5: Train Model")
+    print("="*60)
+    try:
+        payload = {
+            "model": "prophet",
+            "data_file": "sample.csv",
+            "date_column": "date",
+            "value_column": "demand",
+            "parameters": {
+                "yearly_seasonality": True,
+                "weekly_seasonality": True
+            }
+        }
+        print(f"Request Payload:\n{json.dumps(payload, indent=2)}")
+        
+        response = requests.post(
+            f"{BASE_URL}/api/v1/train",
+            json=payload,
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"✅ Status Code: {response.status_code}")
+        print(f"Response:\n{json.dumps(response.json(), indent=2)}")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        return False
+
+def test_upload():
+    """Test file upload endpoint"""
+    print("\n" + "="*60)
+    print("TEST 6: File Upload")
+    print("="*60)
+    try:
+        # Create sample CSV file
+        sample_file = 'sample_upload.csv'
+        with open(sample_file, 'w') as f:
+            f.write('date,demand,price\n')
+            f.write('2023-01-01,100,10\n')
+            f.write('2023-01-02,120,12\n')
+            f.write('2023-01-03,110,11\n')
+        
+        print(f"Uploading file: {sample_file}")
+        
+        with open(sample_file, 'rb') as f:
+            files = {'file': f}
+            response = requests.post(f"{BASE_URL}/api/v1/upload", files=files)
+        
+        print(f"✅ Status Code: {response.status_code}")
+        print(f"Response:\n{json.dumps(response.json(), indent=2)}")
+        
+        # Clean up
+        if os.path.exists(sample_file):
+            os.remove(sample_file)
+        
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        return False
+
+def test_models():
+    """Test list models endpoint"""
+    print("\n" + "="*60)
+    print("TEST 7: List Models")
+    print("="*60)
+    try:
+        response = requests.get(f"{BASE_URL}/api/v1/models")
+        print(f"✅ Status Code: {response.status_code}")
+        print(f"Response:\n{json.dumps(response.json(), indent=2)}")
+        return response.status_code == 200
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        return False
+
+def test_metrics():
+    """Test metrics endpoint"""
+    print("\n" + "="*60)
+    print("TEST 8: Get Metrics")
+    print("="*60)
+    try:
+        response = requests.get(f"{BASE_URL}/api/v1/metrics?model_id=model_001")
+        print(f"✅ Status Code: {response.status_code}")
+        print(f"Response:\n{json.dumps(response.json(), indent=2)}")
+        return response.status_code in [200, 400]  # 400 if model not found
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        return False
+
+def test_error_handling():
+    """Test error handling"""
+    print("\n" + "="*60)
+    print("TEST 9: Error Handling (Invalid Request)")
+    print("="*60)
+    try:
+        response = requests.post(
+            f"{BASE_URL}/api/v1/predict",
+            json={},  # Empty payload
+            headers={"Content-Type": "application/json"}
+        )
+        print(f"✅ Status Code: {response.status_code}")
+        print(f"Response:\n{json.dumps(response.json(), indent=2)}")
+        return response.status_code == 400
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        return False
+
+if __name__ == "__main__":
+    print("\n")
+    print("╔" + "="*58 + "╗")
+    print("║" + " "*15 + "FORECASTING-LOGISTICS API TEST SUITE" + " "*7 + "║")
+    print("╚" + "="*58 + "╝")
+    
+    print(f"\nTesting API at: {BASE_URL}")
+    
+    # Run all tests
+    results = {
+        "Health Check": test_health(),
+        "API Status": test_status(),
+        "Home": test_home(),
+        "Prediction": test_predict(),
+        "Train Model": test_train(),
+        "File Upload": test_upload(),
+        "List Models": test_models(),
+        "Get Metrics": test_metrics(),
+        "Error Handling": test_error_handling()
+    }
+    
+    # Print summary
+    print("\n" + "="*60)
+    print("TEST SUMMARY")
+    print("="*60)
+    
+    passed = sum(1 for v in results.values() if v)
+    total = len(results)
+    
+    for test_name, result in results.items():
+        status = "✅ PASSED" if result else "❌ FAILED"
+        print(f"{test_name}: {status}")
+    
+    print("="*60)
+    print(f"Total: {passed}/{total} tests passed")
+    print("="*60)
+    
+    if passed == total:
+        print("🎉 All tests passed!")
+    else:
+        print("⚠️  Some tests failed. Check server and try again.")
