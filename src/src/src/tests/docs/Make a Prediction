@@ -1,0 +1,7 @@
+curl -X POST http://localhost:5000/api/v1/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "prophet",
+    "data": [100, 120, 110, 130, 150, 140, 160],
+    "periods": 7
+  }'
