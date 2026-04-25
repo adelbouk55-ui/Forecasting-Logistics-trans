@@ -1,0 +1,25 @@
+Forecasting-Logistics-trans/
+├── README.md ✅ (done)
+├── requirements.txt ✅ (done)
+├── .gitignore (next)
+├── config.py
+├── main.py
+├── data/
+│   ├── raw/
+│   └── processed/
+├── models/
+│   └── saved_models/
+├── src/
+│   ├── __init__.py
+│   ├── data_loader.py
+│   ├── preprocessing.py
+│   ├── forecasting_model.py
+│   └── utils.py
+├── notebooks/
+│   └── exploration.ipynb
+├── tests/
+│   ├── __init__.py
+│   ├── test_data_loader.py
+│   └── test_forecasting.py
+└── docs/
+    └── API.md
