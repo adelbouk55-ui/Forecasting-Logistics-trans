@@ -1,0 +1,8 @@
+curl -X POST http://localhost:5000/api/v1/train \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "prophet",
+    "data_file": "sales_data.csv",
+    "date_column": "date",
+    "value_column": "demand"
+  }'
