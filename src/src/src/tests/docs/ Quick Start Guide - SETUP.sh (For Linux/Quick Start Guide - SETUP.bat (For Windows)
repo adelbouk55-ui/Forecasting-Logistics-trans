@@ -1,0 +1,45 @@
+@echo off
+
+echo.
+echo ╔════════════════════════════════════════════════════════════╗
+echo ║   Forecasting-Logistics Project Setup                      ║
+echo ╚════════════════════════════════════════════════════════════╝
+
+echo.
+echo Step 1: Creating virtual environment...
+python -m venv venv
+
+echo Step 2: Activating virtual environment...
+call venv\Scripts\activate.bat
+
+echo Step 3: Installing dependencies...
+pip install -r requirements.txt
+
+echo Step 4: Creating .env file from template...
+if not exist .env (
+    copy .env.example .env
+    echo ✅ .env file created. Please edit with your settings.
+) else (
+    echo ⚠️  .env file already exists.
+)
+
+echo Step 5: Creating necessary folders...
+if not exist data\raw mkdir data\raw
+if not exist data\processed mkdir data\processed
+if not exist models\saved_models mkdir models\saved_models
+if not exist logs mkdir logs
+if not exist notebooks mkdir notebooks
+
+echo.
+echo ╔════════════════════════════════════════════════════════════╗
+echo ║   Setup Complete! ✅                                       ║
+echo ╚════════════════════════════════════════════════════════════╝
+
+echo.
+echo Next steps:
+echo 1. Activate virtual environment: venv\Scripts\activate.bat
+echo 2. Run the API: python main.py
+echo 3. Test endpoints: python test_api.py
+echo 4. Run unit tests: pytest tests/ -v
+
+pause
