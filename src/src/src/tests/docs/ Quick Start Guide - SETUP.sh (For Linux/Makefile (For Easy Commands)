@@ -1,0 +1,45 @@
+.PHONY: help install run test clean docker-build docker-run setup
+
+help:
+	@echo "Forecasting-Logistics Project Commands"
+	@echo "========================================"
+	@echo "make install      - Install dependencies"
+	@echo "make run          - Run the API server"
+	@echo "make test         - Run unit tests"
+	@echo "make test-api     - Test API endpoints"
+	@echo "make clean        - Clean up cache files"
+	@echo "make docker-build - Build Docker image"
+	@echo "make docker-run   - Run Docker container"
+	@echo "make setup        - Setup project"
+
+install:
+	pip install -r requirements.txt
+
+run:
+	python main.py
+
+test:
+	pytest tests/ -v
+
+test-api:
+	python test_api.py
+
+clean:
+	find . -type d -name __pycache__ -exec rm -rf {} +
+	find . -type f -name "*.pyc" -delete
+	rm -rf .pytest_cache
+	rm -rf .coverage
+	rm -rf htmlcov
+
+docker-build:
+	docker build -t forecasting-logistics:latest .
+
+docker-run:
+	docker run -p 5000:5000 forecasting-logistics:latest
+
+setup:
+	python -m venv venv
+	. venv/bin/activate && pip install -r requirements.txt
+	mkdir -p data/raw data/processed models/saved_models logs
+	cp .env.example .env
+	@echo "Setup complete! Activate venv and run: python main.py"
