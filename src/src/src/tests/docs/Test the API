@@ -1,0 +1,8 @@
+# Health check
+curl http://localhost:5000/health
+
+# API status
+curl http://localhost:5000/api/v1/status
+
+# Full API info
+curl http://localhost:5000/
